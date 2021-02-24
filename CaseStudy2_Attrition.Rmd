@@ -1,0 +1,540 @@
+---
+title: "CaseStudy2"
+author: "Puri"
+date: "2/21/2021"
+output:
+  html_document: default
+  pdf_document: default
+editor_options:
+  chunk_output_type: console
+---
+The study of employee.....
+```{r setup, include=FALSE}
+chooseCRANmirror(graphics=FALSE, ind=1)
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(class)
+library(caret)
+library(corrplot)
+library(Metrics)
+library(Hmisc)
+library(MASS)
+library(GGally)
+library(leaps)
+library(readxl)
+install.packages('e1071', dependencies=TRUE)
+```
+
+
+```{r}
+# Read in the data
+DataOrig = read.csv("CaseStudy2-data.csv",header = TRUE)
+
+# Explore missing values in each columns - There is none!
+sapply(DataOrig, function(x) sum(is.na(x)))
+
+str(DataOrig)
+```
+
+```{r}
+df.JobRole <- subset(DataOrig, select = c(JobRole, Attrition))
+df.JobRole$JobRole_Attri <- paste(df.JobRole$JobRole,df.JobRole$Attrition, sep = ".")
+df.JobRole <- as.data.frame(df.JobRole)
+df.JobRole <- count(df.JobRole, JobRole_Attri)
+df.JobRole$JobTitle <- gsub("\\..*$", "", df.JobRole$JobRole_Attri)
+df.JobRole$Attrition <- gsub(".*\\.", "", df.JobRole$JobRole_Attri)
+df.JobRole <- df.JobRole %>% group_by(JobTitle) %>% mutate(n.sum = sum(n))
+
+ggplot(df.JobRole, aes(x=JobTitle, y=n, fill = Attrition, label = n)) +
+  geom_bar(stat = "identity") +
+  geom_text(size = 5, position = position_stack(vjust = 0.5)) +
+  xlab("Job Role") + ylab("Number of Employees") + coord_flip()
+
+ggplot(df.JobRole, aes(x=JobTitle, y=n/n.sum, fill = Attrition)) +
+  geom_bar(position = "fill", stat = "identity",color='black',width=0.9) +
+  scale_y_continuous(labels = scales::percent) +
+  geom_text(aes(label = paste0(round(n/n.sum*100, digits = 2),"%")), 
+            position = position_stack(vjust = 0.5), size = 5) +
+  xlab("Job Role") + ylab("Percentage of Attrition")
+
+ggplot(DataOrig, aes(x=JobRole, y=YearsAtCompany)) +
+  geom_boxplot()
+```
+
+## Identify the top three factors that contribute to turnover 
+```{r, include=FALSE}
+# Age - Quite important - Younger > Older
+df.Age = DataOrig %>% group_by(Age, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.Age %>% ggplot(aes(x=Age, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+ggplot(DataOrig, aes(x=Attrition, y=Age)) + geom_boxplot()
+
+#JobRole vs. Age
+ggplot(DataOrig, aes(x=JobRole, y=Age, color=Attrition)) +
+  geom_point()
+
+# Business travel - Quite important
+df.BusTravel = DataOrig %>% group_by(BusinessTravel, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.BusTravel %>% ggplot(aes(x=BusinessTravel, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Daily rate (quite), Hourly rate (NOT), Monthly Rate (NOT), and Monthly Income (quite)
+ggplot(DataOrig, aes(x=Attrition, y=DailyRate)) + geom_boxplot() # Attrition group has less daily rate
+ggplot(DataOrig, aes(x=Attrition, y=HourlyRate)) + geom_boxplot() # Attrition group has more hourly rate which does not make sense..
+ggplot(DataOrig, aes(x=Attrition, y=MonthlyRate)) + geom_boxplot() # Attrition group has more monthly rate which does not make sense..
+ggplot(DataOrig, aes(x=Attrition, y=MonthlyIncome)) + geom_boxplot()
+
+# Department - Quite important - Sale > R&D > HR
+df.Department = DataOrig %>% group_by(Department, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.Department %>% ggplot(aes(x=Department, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Distance from home - Quite important
+df.Distance = DataOrig %>% group_by(DistanceFromHome, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.Distance %>% ggplot(aes(x=DistanceFromHome, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+ggplot(DataOrig, aes(x=Attrition, y=DistanceFromHome)) + geom_boxplot() # The more far, the more
+
+
+# Education - NOT important factor
+df.Education = DataOrig %>% group_by(Education, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.Education %>% ggplot(aes(x=Education, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Education field - NOT important factor
+df.EduField = DataOrig %>% group_by(EducationField, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.EduField %>% ggplot(aes(x=EducationField, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Environment satisfaction - NOT important factor
+df.Envi = DataOrig %>% group_by(EnvironmentSatisfaction, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.Envi %>% ggplot(aes(x=EnvironmentSatisfaction, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Gender, Male > Female - NOT important factor
+df.Gender = DataOrig %>% group_by(Gender, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.Gender %>% ggplot(aes(x=Gender, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Job involvement
+df.JobInvolvement = DataOrig %>% group_by(JobInvolvement, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.JobInvolvement %>% ggplot(aes(x=JobInvolvement, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Job level - quite Important
+df.JobLevel = DataOrig %>% group_by(JobLevel, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.JobLevel %>% ggplot(aes(x=JobLevel, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Job Satisfaction, The less satisfaction, the more chance for attrition
+df.JobSatisfaction = DataOrig %>% group_by(JobSatisfaction, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.JobSatisfaction %>% ggplot(aes(x=JobSatisfaction, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# Marital Status, Single > Married > Divorced - NOT important factor
+df.MaritalStatus = DataOrig %>% group_by(MaritalStatus, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.MaritalStatus %>% ggplot(aes(x=MaritalStatus, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+# NumCompaniesWorked, 5+ companies, more attrition
+df.NumCompaniesWorked = DataOrig %>% group_by(NumCompaniesWorked, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.NumCompaniesWorked %>% ggplot(aes(x=NumCompaniesWorked, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+# Over time
+df.OT = DataOrig %>% group_by(OverTime, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.OT %>% ggplot(aes(x=OverTime, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# PercentSalaryHike, 22%-24% (from 25% max) has more chance of attribute which doesn't make sense - NOT important
+df.PercentSalaryHike = DataOrig %>% group_by(PercentSalaryHike, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.PercentSalaryHike %>% ggplot(aes(x=PercentSalaryHike, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# PerformanceRatinge, not significant different between 3 and 4 - NOT important
+df.PerformanceRating = DataOrig %>% group_by(PerformanceRating, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.PerformanceRating %>% ggplot(aes(x=PerformanceRating, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# RelationshipSatisfaction, for 1-3, the better relationship, the less chance for attrition but 4 has higher % attrition than 2 and 3 ?? - NOT important
+df.RelationshipSatisfaction = DataOrig %>% group_by(RelationshipSatisfaction, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.RelationshipSatisfaction %>% ggplot(aes(x=RelationshipSatisfaction, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# StockOptionLevel, for 1-3, the higher stock level, the less chance for attrition but 4 has higher % attrition than 2 and 3 ?? - NOT important
+df.StockOptionLevel = DataOrig %>% group_by(StockOptionLevel, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.StockOptionLevel %>% ggplot(aes(x=StockOptionLevel, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# TotalWorkingYears - NOT important
+df.TotalWorkingYears = DataOrig %>% group_by(TotalWorkingYears, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.TotalWorkingYears %>% ggplot(aes(x=TotalWorkingYears, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# TrainingTimesLastYear - NOT important
+df.TrainingTimesLastYear = DataOrig %>% group_by(TrainingTimesLastYear, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.TrainingTimesLastYear %>% ggplot(aes(x=TrainingTimesLastYear, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# WorkLifeBalance - quite important
+df.WorkLifeBalance = DataOrig %>% group_by(WorkLifeBalance, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.WorkLifeBalance %>% ggplot(aes(x=WorkLifeBalance, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# YearsAtCompany - NOT important
+df.YearsAtCompany = DataOrig %>% group_by(YearsAtCompany, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.YearsAtCompany %>% ggplot(aes(x=YearsAtCompany, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# YearsInCurrentRole - NOT important
+df.YearsInCurrentRole = DataOrig %>% group_by(YearsInCurrentRole, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.YearsInCurrentRole %>% ggplot(aes(x=YearsInCurrentRole, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# YearsSinceLastPromotion - NOT important
+df.YearsSinceLastPromotion = DataOrig %>% group_by(YearsSinceLastPromotion, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.YearsSinceLastPromotion %>% ggplot(aes(x=YearsSinceLastPromotion, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+
+
+# YearsWithCurrManager - NOT important
+df.YearsWithCurrManager = DataOrig %>% group_by(YearsWithCurrManager, Attrition) %>% summarise(count=n()) %>% mutate(pct=count/sum(count)) 
+
+df.YearsWithCurrManager %>% ggplot(aes(x=YearsWithCurrManager, y=pct, fill=Attrition)) + geom_bar(stat="identity") + 
+  geom_text(aes(label=paste0(round(pct*100,1),"%")), 
+            position = position_stack(vjust = 0.5), size = 3)
+```
+
+
+```{r}
+# Change all character variables to factor
+DataOrig$BusinessTravel.Num <- as.integer(as.factor(DataOrig$BusinessTravel))
+DataOrig$Department.Num <- as.integer(as.factor(DataOrig$Department))
+DataOrig$EducationField.Num <- as.integer(as.factor(DataOrig$EducationField))
+DataOrig$Gender.Num <- as.integer(as.factor(DataOrig$Gender))
+DataOrig$JobRole.Num <- as.integer(as.factor(DataOrig$JobRole))
+DataOrig$MaritalStatus.Num <- as.integer(as.factor(DataOrig$MaritalStatus))
+DataOrig$OverTime.Num <- as.integer(as.factor(DataOrig$OverTime))
+```
+
+```{r}
+set.seed(8)
+splitPerc = .7
+
+ImpFactors <- subset(DataOrig, select = c(Attrition, JobInvolvement, MonthlyIncome, OverTime.Num))
+ImpFactors$MonthlyIncome <- scale(ImpFactors$MonthlyIncome)
+#ImpFactors$Age <- scale(ImpFactors$Age)
+
+trainIndices = sample(1:dim(ImpFactors)[1], round(splitPerc * dim(ImpFactors)[1]))
+train.Attrition = ImpFactors[trainIndices,]
+test.Attrition = ImpFactors[-trainIndices,]
+
+# run knn
+classifications = knn(train.Attrition[,c(2:4)], test.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = 21)
+
+# Confusion Matrix
+confusionMatrix(table(test.Attrition$Attrition, classifications))
+
+
+# Find Sensitivity and Specificity for Train Set
+classifications_train = knn(train.Attrition[,c(2:4)], train.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = 5)
+
+confusionMatrix(table(train.Attrition$Attrition, classifications_train))
+```
+
+## Loop for many k and one training / test partition
+```{r}
+accs = data.frame(accuracy = numeric(30), k = numeric(30))
+for(i in 1:30)
+{
+  classifications = knn(train.Attrition[,c(2:4)], test.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = i)
+  table(test.Attrition$Attrition, classifications)
+  CM = confusionMatrix(table(test.Attrition$Attrition, classifications))
+  accs$accuracy[i] = CM$overall[1]
+  accs$k[i] = i
+}
+plot(accs$k,accs$accuracy, type = "l", xlab = "k")
+```
+
+
+# Loop for many k and the average of many training / test partition
+```{r}
+iterations = 500
+numks = 30
+masterAcc = matrix(nrow = iterations, ncol = numks)
+  
+for(j in 1:iterations)
+{
+accs = data.frame(accuracy = numeric(30), k = numeric(30))
+trainIndices = sample(1:dim(ImpFactors)[1], round(splitPerc * dim(ImpFactors)[1]))
+train.Attrition = ImpFactors[trainIndices,]
+test.Attrition = ImpFactors[-trainIndices,]
+for(i in 1:numks)
+{
+  classifications = knn(train.Attrition[,c(2:4)], test.Attrition[,c(2:4)], train.Attrition$Attrition, prob = TRUE, k = i)
+  table(classifications,test.Attrition$Attrition)
+  CM = confusionMatrix(table(test.Attrition$Attrition, classifications))
+  masterAcc[j,i] = CM$overall[1]
+}
+}
+MeanAcc = colMeans(masterAcc)
+plot(seq(1,numks,1),MeanAcc, type = "l")
+```
+
+# Write to csv File
+```{r}
+# Read in 'No Attrition' file
+No.AttritionOrig <- read.csv("CaseStudy2CompSet No Attrition.csv", header=TRUE)
+
+# Only include variables that used in the model
+No.Attrition <- subset(No.AttritionOrig, select = c(ID, JobInvolvement, MonthlyIncome, OverTime))
+# Use Scale with MonthlyIncome and change OverTime to interger value
+No.Attrition$MonthlyIncome <- scale(No.Attrition$MonthlyIncome)
+No.Attrition$OverTime <- as.integer(as.factor(No.Attrition$OverTime))
+
+classifications = knn(train.Attrition[,c(2:4)], No.Attrition[,c(2:4)], train.Attrition$Attrition, k = 21, prob = TRUE)
+
+# Cleanup the df to match example file before writing
+Attrition.Prediction <- as.data.frame(classifications)
+Attrition.Prediction$ID <- No.Attrition$ID
+No.Attrition_pred <- merge(x = No.AttritionOrig, y = Attrition.Prediction,
+                          by.x = "ID", by.y = "ID", all = TRUE)
+names(No.Attrition_pred)[names(No.Attrition_pred)=="classifications"] <- "Attrition"
+No.Attrition_pred <- No.Attrition_pred %>% relocate("Attrition", .after = "ID")
+
+# Write to file
+write.csv(No.Attrition_pred, "Case2PredictionsRudick Attrition.csv", row.names = FALSE, quote=FALSE)
+```
+
+## Linear Regrssion for MonthlyIncome Prediction
+```{r}
+# Find correlation coefficient with p-value for numerical variables
+Num_col <- subset(DataOrig, select = -c(Attrition, BusinessTravel,
+                                    Department, EducationField,
+                                    Gender, JobRole, MaritalStatus,
+                                    Over18, OverTime,
+                                    ID, EmployeeCount,
+                                    EmployeeNumber, StandardHours
+                                    ))
+M <- cor(Num_col)
+corrplot(M, type="upper")
+
+rcorr(as.matrix(Num_col))
+
+subset(DataOrig, select = c(MonthlyIncome, Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager)) %>%
+  ggpairs()
+
+# There are 7 columns that have statistically significant correlation (p-value < .05) with good range of correlation coefficient which are Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager
+
+# When put all 7 columns to the linear regression model, only JobLevel and TotalWorkingYears are significant
+modelNum <- lm(MonthlyIncome ~ Age+JobLevel+TotalWorkingYears+YearsAtCompany+YearsInCurrentRole+YearsSinceLastPromotion+YearsWithCurrManager, data = Num_col)
+summary(modelNum)
+```
+
+```{r}
+# Find correlation coefficient with p-value for numerical variables
+Categorical <- subset(DataOrig, select = c(MonthlyIncome, BusinessTravel,
+                                           Department, EducationField,
+                                           Gender, JobRole, MaritalStatus,
+                                           OverTime))
+
+modelCat <- lm(MonthlyIncome ~., data = Categorical)
+summary(modelCat)
+
+modelCat2 <- lm(MonthlyIncome ~ BusinessTravel + JobRole,
+                data = Categorical)
+summary(modelCat2)
+
+# 2 Dummy variables from JobRole are not statistically significant.  The analyst decided to look at the relationshiop between JobRole and Joblevel to see that if JobLevel can explains JobRole
+ggplot(DataOrig, aes(x=JobRole, y=JobLevel)) +
+  geom_boxplot()
+
+ggplot(DataOrig, aes(x= Department, y=MonthlyIncome)) +
+  geom_boxplot()
+
+```
+
+
+```{r}
+
+fit <- lm(MonthlyIncome ~ JobLevel+TotalWorkingYears+YearsWithCurrManager, data=DataOrig)
+summary(fit)
+
+# Check Multiple Linear Regression Asumption
+plot(fit$fitted.values, fit$residuals, main = "Plot of Residuals vs. Fitted Values")
+
+qqnorm(fit$residuals,  ylab = "Residual Quantiles")
+
+ggplot(data = fit, aes(x = fit$residuals)) +
+  geom_histogram() +
+  labs(title = 'Histogram of Residuals', x = 'Residuals', y = 'Frequency')
+
+plot(DataOrig$JobLevel, fit$residuals, main = "Plot of Residuals vs. Fitted Values")
+```
+
+```{r}
+set.seed(8)
+splitPerc = .7
+
+MLR_trainIndices = sample(1:dim(DataOrig)[1], round(splitPerc * dim(DataOrig)[1]))
+train.MonthlyIncome = DataOrig[MLR_trainIndices,]
+test.MonthlyIncome = DataOrig[-MLR_trainIndices,]
+
+model_fit <- lm(MonthlyIncome ~ JobLevel+TotalWorkingYears+YearsWithCurrManager, data=train.MonthlyIncome)
+summary(model_fit)
+
+model_preds = predict(model_fit, newdata = test.MonthlyIncome)
+as.data.frame(model_preds)
+
+test.RMSE = data.frame(Observed = test.MonthlyIncome$MonthlyIncome,
+                       Predicted = model_preds)
+test.RMSE$Residual = test.RMSE$Observed - test.RMSE$Predicted
+test.RMSE$SquaredResidual = test.RMSE$Residual^2
+test.RMSE
+
+mean(sqrt(test.RMSE$SquaredResidual)) #1,091.855
+
+
+# Find RMSE for Test Set
+model_preds_train = predict(model_fit, newdata = train.MonthlyIncome)
+as.data.frame(model_preds_train)
+
+train.RMSE = data.frame(Observed = train.MonthlyIncome$MonthlyIncome,
+                       Predicted = model_preds_train)
+train.RMSE$Residual = train.RMSE$Observed - train.RMSE$Predicted
+train.RMSE$SquaredResidual = train.RMSE$Residual^2
+train.RMSE
+
+mean(sqrt(train.RMSE$SquaredResidual)) #1,015.037
+```
+
+# Write to csv File
+```{r}
+# Read in 'No Attrition' file
+No.SalaryOrig <- read_excel("CaseStudy2CompSet No Salary.xlsx")
+
+# Only include variables that used in the model
+No.Salary <- subset(No.SalaryOrig, select = c(ID, JobLevel, TotalWorkingYears, YearsWithCurrManager))
+
+model_preds_csv = predict(model_fit, newdata = No.Salary)
+
+# Cleanup the df to match example file before writing
+MonthlyIncome.Prediction <- as.data.frame(model_preds_csv)
+MonthlyIncome.Prediction$ID <- No.Salary$ID
+No.Salary_pred <- merge(x = No.SalaryOrig, y = MonthlyIncome.Prediction,
+                          by.x = "ID", by.y = "ID", all = TRUE)
+names(No.Salary_pred)[names(No.Salary_pred)=="model_preds_csv"] <- "MonthlyIncome"
+No.Salary_pred <- No.Salary_pred %>% relocate("MonthlyIncome", .after = "ID")
+
+# Write to file
+write.csv(No.Salary_pred, "Case2PredictionsRudick Salary.csv", row.names = FALSE, quote=FALSE)
+```
+
+```{r}
+
+selectedVariables <- subset(DataOrig, select = c(Attrition, MonthlyIncome, BusinessTravel, Department, EducationField,
+                                    Gender, JobRole, MaritalStatus,
+                                    OverTime, Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager
+                                    ))
+df <- subset(DataOrig, select = -c(Attrition,
+                                    Over18,
+                                    ID, EmployeeCount,
+                                    EmployeeNumber, StandardHours
+                                    ))
+  
+# Fit the full model 
+full.model <- lm(MonthlyIncome ~., data = df)
+# Stepwise regression model
+step.model <- stepAIC(full.model, direction = "both", 
+                      trace = FALSE)
+summary(step.model)
+
+# Set seed for reproducibility
+set.seed(123)
+# Set up repeated k-fold cross-validation
+train.control <- trainControl(method = "cv", number = 10)
+# Train the model
+step.model <- train(MonthlyIncome ~., data = df,
+                    method = "leapSeq", 
+                    tuneGrid = data.frame(nvmax = 1:5),
+                    trControl = train.control
+                    )
+step.model$results
+
+step.model$bestTune
+
+summary(step.model$finalModel)
+
+coef(step.model$finalModel, 4)
+```
