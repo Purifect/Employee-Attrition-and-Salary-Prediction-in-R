@@ -1,8 +1,8 @@
 MSDS 6306: Doing Data Science - Case Study 01
 Case Study Two
 
-Employee Attrition and Salary Prediction
-This repository contains the artifacts created from a study of employee attrition and salary prediction. The study was conducted using 870 existing employee data. Some of the focuses of this exploratory data analysis were placed on ........
+The analysis of employee attrition and salary prediction was conducted using 870 observations (employees) dataset from DDSAnalytics Company.
+Some of the focuses of this exploratory data analysis were placed on attrition and salary prediction, and trends for specific job roles.
 
 
 File:
