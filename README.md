@@ -2,6 +2,7 @@
 ## Case Study Two
 
 The analysis of employee attrition and salary prediction was conducted using 870 observations (employees) dataset from DDSAnalytics Company.
+
 Some of the focuses of this exploratory data analysis were placed on attrition and salary prediction, and trends for specific job roles.
 
 
