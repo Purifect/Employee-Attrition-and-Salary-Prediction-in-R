@@ -1,11 +1,11 @@
-MSDS 6306: Doing Data Science - Case Study 01
-Case Study Two
+#MSDS 6306: Doing Data Science - Case Study 01
+##Case Study Two
 
 The analysis of employee attrition and salary prediction was conducted using 870 observations (employees) dataset from DDSAnalytics Company.
 Some of the focuses of this exploratory data analysis were placed on attrition and salary prediction, and trends for specific job roles.
 
 
-File:
+###File:
 Case2PredictionsRudick Attrition.csv - originally from 'CaseStudy2CompSet No Attrition.csv' with attrition predicted value 
 
 Case2PredictionsRudick Salary.csv - originally from 'CaseStudy2CompSet No Salary.xlsx' with salary (MonthlyIncome) predicted value 
