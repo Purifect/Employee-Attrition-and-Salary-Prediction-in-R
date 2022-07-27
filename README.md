@@ -1,4 +1,4 @@
-# MSDS 6306: Doing Data Science - Case Study 01
+# MSDS 6306: Doing Data Science - Case Study 02
 ## Case Study Two
 
 The analysis of employee attrition and salary prediction was conducted using 870 observations (employees) dataset from DDSAnalytics Company.
