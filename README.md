@@ -98,9 +98,9 @@ So, I decided to use only JobLevel, TotalWorkingYears, YearsWithCurrManager for 
 <img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Summary.png?raw=true" style="center" width="700"/>
 
  The plots below had run to help to check fir MLR assumptions:
- - Normality – Residuals of the linear model is assumed to be normally distributed
- - Equal Variance – The variance of the residuals is constant for every combination of independent variables and thus constant across all the predicted values (residual plots)
- - Independence – Observations are identically and independently distributed (i.i.d.)
+ - **Normality** – Residuals of the linear model is assumed to be normally distributed
+ - **Equal Variance** – The variance of the residuals is constant for every combination of independent variables and thus constant across all the predicted values (residual plots)
+ - **Independence** – Observations are identically and independently distributed (i.i.d.)
  
  <img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Assumptions.png?raw=true" style="center" width="500"/>
 
@@ -112,9 +112,9 @@ So, I decided to use only JobLevel, TotalWorkingYears, YearsWithCurrManager for 
 
 ## Conclusions
 
-- RShiny app is very helpfulvisualization the dataset: https://purifect.shinyapps.io/Employee_Attrition/
-- For employee attrition classification model, I used **K-Nearest Neighbors (KNN) algorithm**.  The model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
-- For employee's monthly income, I used **Multiple Linear Regression (MLR) model**.  The model's **Adjusted R2 is 0.9102** with **RSME of $1,035.80**.
+- RShiny app is a very helpful dynamic visualization tool that can be used to display the dataset.
+- K-Nearest Neighbors (KNN) algorithm is used for employee attrition classification model.  The model achieved the accuracy of 86.7% with the 95% CI of Accuracy of (83.7%, 89.3%).
+- Multiple Linear Regression (MLR) model is used to create the employee's monthly income prediction.  The model's Adjusted R2 is 0.9102 with RSME of $1,035.80.
 
 
 [Back to Top](#BackToTop)
