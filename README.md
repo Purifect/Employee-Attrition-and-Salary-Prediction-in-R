@@ -87,8 +87,18 @@ With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Acc
 Before fitting the MLR Model, I looked at the correlation coefficient with p-value between all numerical variables.
 I found that there are 7 columns that have statistically significant correlation (p-value < .05) with good range of correlation coefficient which are Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager.
 
-<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr.png?raw=true" style="left" width="400"/>
-<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="right" width="400"/>
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="center" width="500"/>
+
+When included all 7 variables to the linear regression model, only JobLevel and TotalWorkingYears are significant.
+The categorical variables then added to the MLR model, none of them makes the model better and/or makes the p-value statistically significant.
+So, I decided to use only JobLevel, TotalWorkingYears, YearsWithCurrManager for MLR model.  The MLR model summary as shown below.
+
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Summary.png?raw=true" style="center" width="500"/>
+
+ The plots below had run to help to check fir MLR assumptions:
+ - Independence of obsservations
+ 
+ <img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Assumptions.png?raw=true" style="center" width="500"/>
 
 
 [Back to Top](#BackToTop)
