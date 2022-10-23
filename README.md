@@ -86,14 +86,10 @@ With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Acc
 
 Before fitting the MLR Model, I looked at the correlation coefficient with p-value between all numerical variables.
 I found that there are 7 columns that have statistically significant correlation (p-value < .05) with good range of correlation coefficient which are Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager.
-<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr.png?raw=true" style="left" width="300"/>
-<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="right" width="300"/>
 
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr.png?raw=true" style="left" width="400"/>
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="right" width="450"/>
 
-
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="left" width="400"/>
-
-With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 
 [Back to Top](#BackToTop)
 
