@@ -1,5 +1,5 @@
 
-# Employee Attrition and Salary Prediction in R :briefcase:
+# Employee Attrition and Salary Prediction in R  :briefcase::computer:
 
 **Contributor**: [**Puri Rudick**](https://www.github.com/Purifect)
 
