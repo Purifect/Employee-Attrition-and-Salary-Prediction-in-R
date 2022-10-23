@@ -29,7 +29,7 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 - [Data Description](#P1)
 - [Job Role Specific Insights](#P2)
 - [Employee Attrition Classification Model Using KNN](#P3)
-- [Employee's Monthly Income Prediction Using MLR](#P4)
+- [Employee's Monthly Income Prediction Model Using MLR](#P4)
 - [References](#References)
 
 ---
@@ -45,6 +45,7 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
   - 140 observations were identified as ‘Attrition'
   - 730 observations were identified as ’No Attrition’.
 - The dataset has **no missing values**.
+- **The dataset was spitted into 70% Train Set and 30% Validation Set before fitting the models.** 
 
 **Test dataset** contains 300 observations.
 
@@ -55,8 +56,8 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 <a name="P2"></a>
 
 ## Job Role Specific Insights
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/JobRole_vsAttrition.png?raw=true" style="center" width="450"/>
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/Trends_byJobRole.png?raw=true" style="center" width="400"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/JobRole_vsAttrition.png?raw=true" style="center" width="500"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/Trends_byJobRole.png?raw=true" style="center" width="500"/>
 
 *(Top) Bar Chart Displays Percent Attrition in Each Job Role.*<br>
 *(Bottom) Spider Plot Displays Satisfaction and Wokr Life Balance (WLB) for Each Job Role.*
@@ -72,19 +73,27 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 <a name="P3"></a>
 
 ## Employee Attrition Classification Model Using KNN
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="left" width="400"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="center" width="500"/>
 
-Wiht K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
+With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 
 [Back to Top](#BackToTop)
 
 ---
 <a name="P4"></a>
 
-## Employee's Monthly Income Prediction Using MLR
+## Employee's Monthly Income Prediction Model Using MLR
+
+Before fitting the MLR Model, I looked at the correlation coefficient with p-value between all numerical variables.
+I found that there are 7 columns that have statistically significant correlation (p-value < .05) with good range of correlation coefficient which are Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager.
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr.png?raw=true" style="left" width="300"/>
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="right" width="300"/>
+
+
+
 <img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="left" width="400"/>
 
-Wiht K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
+With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 
 [Back to Top](#BackToTop)
 
