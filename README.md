@@ -93,7 +93,7 @@ When included all 7 variables to the linear regression model, only JobLevel and 
 The categorical variables then added to the MLR model, none of them makes the model better and/or makes the p-value statistically significant.
 So, I decided to use only JobLevel, TotalWorkingYears, YearsWithCurrManager for MLR model.  The MLR model summary as shown below.
 
-<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Summary.png?raw=true" style="center" width="500"/>
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Summary.png?raw=true" style="center" width="700"/>
 
  The plots below had run to help to check fir MLR assumptions:
  - Independence of obsservations
