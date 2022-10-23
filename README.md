@@ -55,11 +55,11 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 <a name="P2"></a>
 
 ## Job Role Specific Insights
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/JobRole_vsAttrition.png?raw=true" style="left" width="450"/>
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/Trends_byJobRole.png?raw=true" style="left" width="400"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/JobRole_vsAttrition.png?raw=true" style="center" width="450"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/Trends_byJobRole.png?raw=true" style="center" width="400"/>
 
-*(Left) Bar Chart Displays Percent Attrition in Each Job Role.*<br>
-*(Right) Spider Plot Displays Satisfaction and Wokr Life Balance (WLB) for Each Job Role.*
+*(Top) Bar Chart Displays Percent Attrition in Each Job Role.*<br>
+*(Bottom) Spider Plot Displays Satisfaction and Wokr Life Balance (WLB) for Each Job Role.*
 
 - Job roles with high percentage of attrition are: Sale Representative, Human Resources, and Laboratory Technician.
 - Higher job levels, like Director and Manager, have low percentage of attrition.
