@@ -16,7 +16,7 @@ This project aims to leverage data science for talent management. The objectives
 - For employee attrition classification model, I used **K-Nearest Neighbors (KNN) algorithm**.  The model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 - For employee's monthly income, I used **Multiple Linear Regression (MLR) model**.  The model's **Adjusted R2 is 0.9102** with **RSME of $1,035.80**.
 
-## Deliverables
+## :star: Deliverables
 
 Below are my deliverable links of RShiny app, video presentation, PowerPoint, and full analysis (in both R Markdown and HTML files).
 
