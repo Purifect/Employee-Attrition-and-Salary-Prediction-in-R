@@ -73,7 +73,7 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 <a name="P3"></a>
 
 ## Employee Attrition Classification Model Using KNN
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="center" width="500"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="center" width="700"/>
 
 With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 
