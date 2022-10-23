@@ -112,7 +112,7 @@ So, I decided to use only JobLevel, TotalWorkingYears, YearsWithCurrManager for 
 
 ## Conclusions
 
-- - For the top factors for attrition, I created dynamic visualization using an **RShiny** app to help visualization the dataset: https://purifect.shinyapps.io/Employee_Attrition/
+- RShiny app is very helpfulvisualization the dataset: https://purifect.shinyapps.io/Employee_Attrition/
 - For employee attrition classification model, I used **K-Nearest Neighbors (KNN) algorithm**.  The model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 - For employee's monthly income, I used **Multiple Linear Regression (MLR) model**.  The model's **Adjusted R2 is 0.9102** with **RSME of $1,035.80**.
 
