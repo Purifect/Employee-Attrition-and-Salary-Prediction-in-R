@@ -15,10 +15,12 @@ This project aims to leverage data science for talent management. The objectives
 - For the top factors for attrition, I created dynamic visualization using an **RShiny** app to help visualization the dataset: https://purifect.shinyapps.io/Employee_Attrition/
 - For employee attrition classification model, I used **K-Nearest Neighbors (KNN) algorithm**.  The model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 - For employee's monthly income, I used **Multiple Linear Regression (MLR) model**.  The model's **Adjusted R2 is 0.9102** with **RSME of $1,035.80**.
-- 
- 
-Below are my deliverable links of video presentation, PowerPoint, and full analysis (in both R Markdown and HTML files).
 
+## Deliverables
+
+Below are my deliverable links of RShiny app, video presentation, PowerPoint, and full analysis (in both R Markdown and HTML files).
+
+- [RShiny](https://purifect.shinyapps.io/Employee_Attrition/)
 - [YouTube - Video Presentation](https://youtu.be/NcQwkyrFcz0)
 - [PowerPoint Presentation](https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/CaseStudy2_Puri%20Rudick.pptx)
 - Full Analysis: [R Markdown](https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/CaseStudy2_Attrition.Rmd), [HTML](https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/CaseStudy2_Attrition.Rmd)
@@ -30,7 +32,7 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 - [Job Role Specific Insights](#P2)
 - [Employee Attrition Classification Model Using KNN](#P3)
 - [Employee's Monthly Income Prediction Model Using MLR](#P4)
-- [References](#References)
+- [Conclusions](#P5)
 
 ---
 
@@ -73,7 +75,7 @@ Below are my deliverable links of video presentation, PowerPoint, and full analy
 <a name="P3"></a>
 
 ## Employee Attrition Classification Model Using KNN
-<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="center" width="500"/>
+<img src="https://github.com/Purifect/Employee_Attrition_Prediction/blob/main/photos/KNN_Summary.png?raw=true" style="center" width="700"/>
 
 With K = 21, the model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
 
@@ -96,11 +98,23 @@ So, I decided to use only JobLevel, TotalWorkingYears, YearsWithCurrManager for 
 <img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Summary.png?raw=true" style="center" width="700"/>
 
  The plots below had run to help to check fir MLR assumptions:
- - **Normality** – Residuals of the linear model is assumed to be normally distributed
- - **Equal Variance** – The variance of the residuals is constant for every combination of independent variables and thus constant across all the predicted values (residual plots)
- - **Independence** – Observations are identically and independently distributed (i.i.d.)
+ - Normality – Residuals of the linear model is assumed to be normally distributed
+ - Equal Variance – The variance of the residuals is constant for every combination of independent variables and thus constant across all the predicted values (residual plots)
+ - Independence – Observations are identically and independently distributed (i.i.d.)
  
  <img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/MLR_Assumptions.png?raw=true" style="center" width="500"/>
+
+
+[Back to Top](#BackToTop)
+
+---
+<a name="P5"></a>
+
+## Conclusions
+
+- - For the top factors for attrition, I created dynamic visualization using an **RShiny** app to help visualization the dataset: https://purifect.shinyapps.io/Employee_Attrition/
+- For employee attrition classification model, I used **K-Nearest Neighbors (KNN) algorithm**.  The model achieved the **accuracy of 86.7%** with the 95% CI of Accuracy of (83.7%, 89.3%).
+- For employee's monthly income, I used **Multiple Linear Regression (MLR) model**.  The model's **Adjusted R2 is 0.9102** with **RSME of $1,035.80**.
 
 
 [Back to Top](#BackToTop)
