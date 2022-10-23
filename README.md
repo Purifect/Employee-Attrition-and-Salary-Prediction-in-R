@@ -88,7 +88,7 @@ Before fitting the MLR Model, I looked at the correlation coefficient with p-val
 I found that there are 7 columns that have statistically significant correlation (p-value < .05) with good range of correlation coefficient which are Age, JobLevel, TotalWorkingYears, YearsAtCompany, YearsInCurrentRole, YearsSinceLastPromotion, YearsWithCurrManager.
 
 <img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr.png?raw=true" style="left" width="400"/>
-<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="right" width="450"/>
+<img src="https://github.com/Purifect/Employee-Attrition-and-Salary-Prediction-in-R/blob/main/photos/Variable_Corr2.png?raw=true" style="right" width="400"/>
 
 
 [Back to Top](#BackToTop)
